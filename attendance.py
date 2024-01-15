@@ -34,8 +34,8 @@ class Attendance:
 
         # This part is image labels setting start 
         # first header image  
-        img=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\banner.jpg")
-        img=img.resize((1366,130),Image.ANTIALIAS)
+        img=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\banner.jpg")
+        img=img.resize((1366,130),Image.NEAREST)
         self.photoimg=ImageTk.PhotoImage(img)
 
         # set image as lable
@@ -44,7 +44,7 @@ class Attendance:
 
         # backgorund image 
         bg1=Image.open(r"Images_GUI\bg2.jpg")
-        bg1=bg1.resize((1366,768),Image.ANTIALIAS)
+        bg1=bg1.resize((1366,768),Image.NEAREST)
         self.photobg1=ImageTk.PhotoImage(bg1)
 
         # set image as lable
@@ -242,7 +242,7 @@ class Attendance:
             try:
                 Update=messagebox.askyesno("Update","Do you want to Update this Student Attendance!",parent=self.root)
                 if Update > 0:
-                    conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+                    conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
                     mycursor = conn.cursor()
                     mycursor.execute("update stdattendance set std_id=%s,std_roll_no=%s,std_name=%s,std_time=%s,std_date=%s,std_attendance=%s where std_id=%s",( 
                     self.var_id.get(),
@@ -270,7 +270,7 @@ class Attendance:
             try:
                 delete=messagebox.askyesno("Delete","Do you want to Delete?",parent=self.root)
                 if delete>0:
-                    conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+                    conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
                     mycursor = conn.cursor() 
                     sql="delete from stdattendance where std_id=%s"
                     val=(self.var_id.get(),)
@@ -288,7 +288,7 @@ class Attendance:
     # ===========================fatch data form mysql attendance===========
 
     def fetch_data(self):
-        conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+        conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
         mycursor = conn.cursor()
 
         mycursor.execute("select * from stdattendance")
@@ -327,6 +327,7 @@ class Attendance:
         with open(fln) as myfile:
             csvread=csv.reader(myfile,delimiter=",")
             for i in csvread:
+                # if i/2==0:
                 mydata.append(i)
         self.fetchData(mydata)
             
@@ -381,7 +382,7 @@ class Attendance:
             messagebox.showerror("Error","Please Fill All Fields are Required!",parent=self.root)
         else:
             try:
-                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
                 mycursor = conn.cursor()
                 mycursor.execute("insert into stdattendance values(%s,%s,%s,%s,%s,%s)",(
                 self.var_id.get(),
@@ -404,7 +405,7 @@ class Attendance:
 
 
 
-    #     conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+    #     conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
     #     mycursor = conn.cursor()
     #     if messagebox.askyesno("Confirmation","Are you sure you want to save attendance on database?"):
     #         for i in mydata:

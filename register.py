@@ -3,6 +3,7 @@ from tkinter import ttk
 from PIL import Image,ImageTk
 from tkinter import messagebox
 import mysql.connector
+import os
 
 class Register:
     def __init__(self,root):
@@ -20,8 +21,9 @@ class Register:
         self.var_pwd=StringVar()
         self.var_cpwd=StringVar()
         self.var_check=IntVar()
+        self.admpwd=StringVar()   
 
-        self.bg=ImageTk.PhotoImage(file=r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\bgReg.jpg")
+        self.bg=ImageTk.PhotoImage(file=r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\bgReg.jpg")
         
         lb1_bg=Label(self.root,image=self.bg)
         lb1_bg.place(x=0,y=0, relwidth=1,relheight=1)
@@ -30,8 +32,8 @@ class Register:
         frame.place(x=100,y=80,width=900,height=580)
         
 
-        # img1=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\reg1.png")
-        # img1=img1.resize((450,100),Image.ANTIALIAS)
+        # img1=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\reg1.png")
+        # img1=img1.resize((450,100),Image.NEAREST)
         # self.photoimage1=ImageTk.PhotoImage(img1)
         # lb1img1 = Label(image=self.photoimage1,bg="#F2F2F2")
         # lb1img1.place(x=300,y=100, width=500,height=100)
@@ -104,7 +106,7 @@ class Register:
         pwd.place(x=530,y=350)
 
         #entry1 
-        self.txtuser=ttk.Entry(frame,textvariable=self.var_pwd,font=("times new roman",15,"bold"))
+        self.txtuser=ttk.Entry(frame,textvariable=self.var_pwd,font=("times new roman",15,"bold"),show="*")
         self.txtuser.place(x=533,y=375,width=270)
 
 
@@ -113,7 +115,7 @@ class Register:
         cpwd.place(x=530,y=420)
 
         #entry2 
-        self.txtpwd=ttk.Entry(frame,textvariable=self.var_cpwd,font=("times new roman",15,"bold"))
+        self.txtpwd=ttk.Entry(frame,textvariable=self.var_cpwd,font=("times new roman",15,"bold"),show="*")
         self.txtpwd.place(x=533,y=445,width=270)
 
         # Checkbutton
@@ -125,9 +127,28 @@ class Register:
         loginbtn=Button(frame,command=self.reg,text="Register",font=("times new roman",15,"bold"),bd=0,relief=RIDGE,fg="#fff",bg="#002B53",activeforeground="white",activebackground="#007ACC")
         loginbtn.place(x=103,y=510,width=270,height=35)
 
+
+        tncbtn=Button(frame,command=self.tnc,text="View Terms and Condition",font=("times new roman",10,"bold"),bd=0,relief=RIDGE,fg="white",bg="#002B53",activeforeground="orange",activebackground="#002B53")
+        tncbtn.place(x=110,y=560,width=200,height=20)
+
         # Creating Button Login
-        loginbtn=Button(frame,text="Login",font=("times new roman",15,"bold"),bd=0,relief=RIDGE,fg="#fff",bg="#002B53",activeforeground="white",activebackground="#007ACC")
-        loginbtn.place(x=533,y=510,width=270,height=35)
+        # loginbtn=Button(frame,text="Login",font=("times new roman",15,"bold"),bd=0,relief=RIDGE,fg="#fff",bg="#002B53",activeforeground="white",activebackground="#007ACC")
+        # loginbtn.place(x=533,y=510,width=270,height=35)
+        adminpwd =lb1= Label(frame,text="Admin Password:",font=("times new roman",15,"bold"),fg="#002B53",bg="#F2F2F2")
+        adminpwd.place(x=530,y=485)
+
+        #entry2 
+        self.adminpwd=ttk.Entry(frame,font=("times new roman",15,"bold"),show="*")
+        self.adminpwd.place(x=533,y=510,width=270)
+
+        global admin_password
+        admin_password=self.adminpwd.get()
+    
+    def tnc(self):
+        os.startfile("tnc.txt")
+
+
+
 
 
 
@@ -142,30 +163,57 @@ class Register:
         else:
             # messagebox.showinfo("Successfully","Successfully Register!")
             try:
-                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
                 mycursor = conn.cursor()
                 query=("select * from regteach where email=%s")
                 value=(self.var_email.get(),)
                 mycursor.execute(query,value)
                 row=mycursor.fetchone()
+                # query1=("select pwd from regteach where email=%s")
+                # value="saadzh7@gmail.com"
+                # mycursor.execute(query1,(value,))
+                # row1=mycursor.fetchone()
                 if row!=None:
                     messagebox.showerror("Error","User already exist,please try another email")
-                else:
-                    mycursor.execute("insert into regteach values(%s,%s,%s,%s,%s,%s,%s)",(
-                    self.var_fname.get(),
-                    self.var_lname.get(),
-                    self.var_cnum.get(),
-                    self.var_email.get(),
-                    self.var_ssq.get(),
-                    self.var_sa.get(),
-                    self.var_pwd.get()
-                    ))
 
-                    conn.commit()
-                    conn.close()
-                    messagebox.showinfo("Success","Successfully Registerd!",parent=self.root)
+                else:
+                    query1=("SELECT pwd FROM regteach WHERE email=%s")
+                    value1=("saadzh7@gmail.com",)
+                    mycursor.execute(query1,value1) 
+                    row1=mycursor.fetchone()
+                    # row1=str(str(row1))
+                    row1=row1[0]
+                    strrow=row1.strip('"\',')
+                    adm=self.adminpwd.get()
+                    # print("Admin Password:", adm)
+                    # print("Database Admin Password:", strrow)
+
+                    if strrow != adm:
+                        
+                        messagebox.showerror("Error","Invalid admin password")
+
+                    else:
+                        mycursor.execute("insert into regteach values(%s,%s,%s,%s,%s,%s,%s)",(
+                        self.var_fname.get(),
+                        self.var_lname.get(),
+                        self.var_cnum.get(),
+                        self.var_email.get(),
+                        self.var_ssq.get(),
+                        self.var_sa.get(),
+                        self.var_pwd.get()
+                        ))
+                        
+
+                        conn.commit()
+                        conn.close()
+                        messagebox.showinfo("Success","Successfully Registerd!",parent=self.root)
+                        # messagebox.showinfo("Successfully", "Successfully Registered!")
+                         
+                   
             except Exception as es:
                 messagebox.showerror("Error",f"Due to: {str(es)}",parent=self.root)
+           
+
 
 
 

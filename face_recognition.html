@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Recognition Project</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Our Face Recognition Project</h1>
+    </header>
+
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'about')">About</button>
+        <button class="tablinks" onclick="openTab(event, 'features')">Features</button>
+        <button class="tablinks" onclick="openTab(event, 'how-it-works')">How It Works</button>
+        <button class="tablinks" onclick="openTab(event, 'team')">Team</button>
+        <button class="tablinks" onclick="openTab(event, 'contact')">Contact</button>
+    </div>
+
+    <div id="about" class="tabcontent">
+        <!-- Add information about your project -->
+    </div>
+
+    <div id="features" class="tabcontent">
+        <!-- Describe the features of your face recognition system -->
+    </div>
+
+    <div id="how-it-works" class="tabcontent">
+        <!-- Explain how your project works -->
+    </div>
+
+    <div id="team" class="tabcontent">
+        <!-- Introduce the developers and provide contact information -->
+    </div>
+
+    <div id="contact" class="tabcontent">
+        <!-- Add a contact form or contact details -->
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html>

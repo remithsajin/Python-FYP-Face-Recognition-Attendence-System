@@ -1,4 +1,3 @@
-# import re
 from sys import path
 from tkinter import*
 from tkinter import ttk
@@ -19,8 +18,8 @@ class Face_Recognition:
 
         # This part is image labels setting start 
         # first header image  
-        img=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\banner.jpg")
-        img=img.resize((1366,130),Image.ANTIALIAS)
+        img=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\banner.jpg")
+        img=img.resize((1366,130),Image.NEAREST)
         self.photoimg=ImageTk.PhotoImage(img)
 
         # set image as lable
@@ -29,7 +28,7 @@ class Face_Recognition:
 
         # backgorund image 
         bg1=Image.open(r"Images_GUI\bg2.jpg")
-        bg1=bg1.resize((1366,768),Image.ANTIALIAS)
+        bg1=bg1.resize((1366,768),Image.NEAREST)
         self.photobg1=ImageTk.PhotoImage(bg1)
 
         # set image as lable
@@ -45,7 +44,7 @@ class Face_Recognition:
         # ------------------------------------------------------------------------------------------------------------------- 
         # Training button 1
         std_img_btn=Image.open(r"Images_GUI\f_det.jpg")
-        std_img_btn=std_img_btn.resize((180,180),Image.ANTIALIAS)
+        std_img_btn=std_img_btn.resize((180,180),Image.NEAREST)
         self.std_img1=ImageTk.PhotoImage(std_img_btn)
 
         std_b1 = Button(bg_img,command=self.face_recog,image=self.std_img1,cursor="hand2")
@@ -84,20 +83,27 @@ class Face_Recognition:
 
                 confidence=int((100*(1-predict/300)))
 
-                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
                 cursor = conn.cursor()
 
                 cursor.execute("select Name from student where Student_ID="+str(id))
                 n=cursor.fetchone()
-                n="+".join(n)
+                n=n
+                n=str(n)
+                # print(id)
+                # n="+".join(n)
 
                 cursor.execute("select Roll_No from student where Student_ID="+str(id))
                 r=cursor.fetchone()
-                r="+".join(r)
+                r=r
+                r=str(r)
+                # r="+".join(r)
 
                 cursor.execute("select Student_ID from student where Student_ID="+str(id))
                 i=cursor.fetchone()
-                i="+".join(i)
+                i=i
+                i=str(i)
+                # i="+".join(i)
 
 
                 if confidence > 77:
@@ -129,8 +135,8 @@ class Face_Recognition:
             ret,img=videoCap.read()
             img=recognize(img,clf,faceCascade)
             cv2.imshow("Face Detector",img)
-
-            if cv2.waitKey(1) == 13:
+            key = cv2.waitKey(1)
+            if cv2.waitKey(1)==13 or key==27 :
                 break
         videoCap.release()
         cv2.destroyAllWindows()

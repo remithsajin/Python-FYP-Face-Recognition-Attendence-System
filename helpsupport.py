@@ -1,6 +1,7 @@
 from tkinter import*
 from PIL import Image,ImageTk
 import webbrowser
+import os
 
 
 class Helpsupport:
@@ -11,101 +12,74 @@ class Helpsupport:
 
 # This part is image labels setting start 
         # first header image  
-        img=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\banner.jpg")
-        img=img.resize((1366,130),Image.ANTIALIAS)
-        self.photoimg=ImageTk.PhotoImage(img)
+        # img=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\banner.jpg")
+        # img=img.resize((1366,130),Image.NEAREST)
+        # self.photoimg=ImageTk.PhotoImage(img)
 
         # set image as lable
-        f_lb1 = Label(self.root,image=self.photoimg)
-        f_lb1.place(x=0,y=0,width=1366,height=130)
+        # f_lb1 = Label(self.root,image=self.photoimg)
+        # f_lb1.place(x=0,y=0,width=1366,height=130)
+        title_lb1 = Label(self.root,text="Help Support",font=("verdana",30,"bold"),bg="white",fg="navyblue")
+        title_lb1.place(x=0,y=0,width=1366,height=45)
 
         # backgorund image 
-        bg1=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\bg4.png")
-        bg1=bg1.resize((1366,768),Image.ANTIALIAS)
+        bg1=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\hlpdsk.jpg")
+        bg1=bg1.resize((1366,720),Image.NEAREST)
         self.photobg1=ImageTk.PhotoImage(bg1)
 
         # set image as lable
         bg_img = Label(self.root,image=self.photobg1)
-        bg_img.place(x=0,y=130,width=1366,height=768)
+        bg_img.place(x=0,y=55,width=1366,height=768)
 
 
         #title section
-        title_lb1 = Label(bg_img,text="Help Support",font=("verdana",30,"bold"),bg="white",fg="navyblue")
-        title_lb1.place(x=0,y=0,width=1366,height=45)
+     
 
         # Create buttons below the section 
         # ------------------------------------------------------------------------------------------------------------------- 
         # student button 1
-        std_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\web.png")
-        std_img_btn=std_img_btn.resize((180,180),Image.ANTIALIAS)
+        std_img_btn=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\web.png")
+        std_img_btn=std_img_btn.resize((180,180),Image.NEAREST)
         self.std_img1=ImageTk.PhotoImage(std_img_btn)
 
         std_b1 = Button(bg_img,command=self.website,image=self.std_img1,cursor="hand2")
-        std_b1.place(x=250,y=200,width=180,height=180)
+        std_b1.place(x=600,y=270,width=180,height=180)
 
         std_b1_1 = Button(bg_img,command=self.website,text="Website",cursor="hand2",font=("tahoma",15,"bold"),bg="white",fg="navyblue")
-        std_b1_1.place(x=250,y=380,width=180,height=45)
+        std_b1_1.place(x=600,y=450,width=180,height=45)
 
-        # Detect Face  button 2
-        det_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\fb.png")
-        det_img_btn=det_img_btn.resize((180,180),Image.ANTIALIAS)
-        self.det_img1=ImageTk.PhotoImage(det_img_btn)
+        # f_lbl=Label(self.root,image=self.photobg1)
+        # f_lbl.place(x=0,y=55,width=1430,height=720)
 
-        det_b1 = Button(bg_img,command=self.facebook,image=self.det_img1,cursor="hand2",)
-        det_b1.place(x=480,y=200,width=180,height=180)
+        # lbl=Label( bg_img,text="reach out to us via email.\n By clicking below 👇 button",font=("verdana",30,"bold"),fg="blue",bg="white")
+        # lbl.place(x=390,y=50)
 
-        det_b1_1 = Button(bg_img,command=self.facebook,text="Facebook",cursor="hand2",font=("tahoma",15,"bold"),bg="white",fg="navyblue")
-        det_b1_1.place(x=480,y=380,width=180,height=45)
-
-         # Attendance System  button 3
-        att_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\yt.png")
-        att_img_btn=att_img_btn.resize((180,180),Image.ANTIALIAS)
-        self.att_img1=ImageTk.PhotoImage(att_img_btn)
-
-        att_b1 = Button(bg_img,command=self.youtube,image=self.att_img1,cursor="hand2",)
-        att_b1.place(x=710,y=200,width=180,height=180)
-
-        att_b1_1 = Button(bg_img,command=self.youtube,text="Youtube",cursor="hand2",font=("tahoma",15,"bold"),bg="white",fg="navyblue")
-        att_b1_1.place(x=710,y=380,width=180,height=45)
-
-         # Help  Support  button 4
-        hlp_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\gmail.png")
-        hlp_img_btn=hlp_img_btn.resize((180,180),Image.ANTIALIAS)
-        self.hlp_img1=ImageTk.PhotoImage(hlp_img_btn)
-
-        hlp_b1 = Button(bg_img,command=self.gmail,image=self.hlp_img1,cursor="hand2",)
-        hlp_b1.place(x=940,y=200,width=180,height=180)
-
-        hlp_b1_1 = Button(bg_img,command=self.gmail,text="Gmail",cursor="hand2",font=("tahoma",15,"bold"),bg="white",fg="navyblue")
-        hlp_b1_1.place(x=940,y=380,width=180,height=45)
-
-
-        # create function for button 
+        # lbl2=Label( bg_img,text="By clicking below 👇 button",font=("verdana",30,"bold"),fg="blue",bg="white")
+        # lbl.place(x=390,y=170)
+        # # create function for button 
     
     
     def website(self):
-        self.new = 1
-        self.url = "https://exceleprep.com/"
-        webbrowser.open(self.url,new=self.new)
-    
-    def facebook(self):
-        self.new = 1
-        self.url = "https://www.facebook.com/"
-        webbrowser.open(self.url,new=self.new)
-    
-    def youtube(self):
-        self.new = 1
-        self.url = "https://www.youtube.com/channel/UCwpFCX_Z4SVkAT_6hPeUnsA"
-        webbrowser.open(self.url,new=self.new)
-    
-    def gmail(self):
-        self.new = 1
-        self.url = "https://www.gmail.com"
-        webbrowser.open(self.url,new=self.new)
+        # self.new = 1
+        # recipients = ["saadzh7@gmail.com", "mani@gmail.com","remithsajin@gmail.com"]
 
+        # # Subject and body of the email
+        # subject = "Face Recognition Attendance System"
+        # message = "Your Query Here"
 
+        # # Create a comma-separated string of recipients
+        # to_email = ",".join(recipients)
 
+        # # Encode the subject and message for the URL
+        # subject_encoded = subject.replace(" ", "%20")
+        # message_encoded = message.replace(" ", "%20")
 
+        # # Gmail compose link
+        # compose_link = f"https://mail.google.com/mail/?view=cm&fs=1&to={to_email}&su={subject_encoded}&body={message_encoded}"
+
+        # Open the default web browser and navigate to the Gmail compose link
+        webbrowser.open("https://facerecognition.my.canva.site/face-recognition-system/")
+            
 
 
 if __name__ == "__main__":

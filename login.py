@@ -1,8 +1,11 @@
 from tkinter import* 
+import tkinter
 from tkinter import ttk
 from PIL import Image,ImageTk
 from tkinter import messagebox
 from register import Register
+from helpsupport import Helpsupport
+from main import Face_Recognition_System
 import mysql.connector
 # --------------------------
 from train import Train
@@ -13,6 +16,9 @@ from attendance import Attendance
 from developer import Developer
 from helpsupport import Helpsupport
 import os
+import smtplib
+import ssl
+import random
 
 
 class Login:
@@ -26,7 +32,7 @@ class Login:
         self.var_sa=StringVar()
         self.var_pwd=StringVar()
 
-        self.bg=ImageTk.PhotoImage(file=r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\loginBg1.jpg")
+        self.bg=ImageTk.PhotoImage(file=r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\loginBg1.jpg")
         
         lb1_bg=Label(self.root,image=self.bg)
         lb1_bg.place(x=0,y=0, relwidth=1,relheight=1)
@@ -34,8 +40,8 @@ class Login:
         frame1= Frame(self.root,bg="#002B53")
         frame1.place(x=560,y=170,width=340,height=450)
 
-        img1=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\log1.png")
-        img1=img1.resize((100,100),Image.ANTIALIAS)
+        img1=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\log1.png")
+        img1=img1.resize((100,100),Image.NEAREST)
         self.photoimage1=ImageTk.PhotoImage(img1)
         lb1img1 = Label(image=self.photoimage1,bg="#002B53")
         lb1img1.place(x=690,y=175, width=100,height=100)
@@ -57,7 +63,7 @@ class Login:
         pwd.place(x=30,y=230)
 
         #entry2 
-        self.txtpwd=ttk.Entry(frame1,font=("times new roman",15,"bold"))
+        self.txtpwd=ttk.Entry(frame1,font=("times new roman",15,"bold"),show='*')
         self.txtpwd.place(x=33,y=260,width=270)
 
 
@@ -83,13 +89,13 @@ class Login:
 
 
     def login(self):
-        if (self.txtuser.get()=="" or self.txtpwd.get()==""):
+        if (self.txtuser.get()=="" ):
             messagebox.showerror("Error","All Field Required!")
         elif(self.txtuser.get()=="admin" and self.txtpwd.get()=="admin"):
             messagebox.showinfo("Sussessfully","Welcome to Attendance Managment System Using Facial Recognition")
         else:
             # messagebox.showerror("Error","Please Check Username or Password !")
-            conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+            conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
             mycursor = conn.cursor()
             mycursor.execute("select * from regteach where email=%s and pwd=%s",(
                 self.txtuser.get(),
@@ -117,9 +123,9 @@ class Login:
         elif(self.var_pwd.get()==""):
             messagebox.showerror("Error","Please Enter the New Password!",parent=self.root2)
         else:
-            conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+            conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
             mycursor = conn.cursor()
-            query=("select * from regteach where email=%s and ss_que=%s and s_ans=%s")
+            query=("select * from regteach where email=%s and ssq=%s and sa=%s")
             value=(self.txtuser.get(),self.var_ssq.get(),self.var_sa.get())
             mycursor.execute(query,value)
             row=mycursor.fetchone()
@@ -142,11 +148,12 @@ class Login:
         if self.txtuser.get()=="":
             messagebox.showerror("Error","Please Enter the Email ID to reset Password!")
         else:
-            conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+            conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
             mycursor = conn.cursor()
             query=("select * from regteach where email=%s")
             value=(self.txtuser.get(),)
             mycursor.execute(query,value)
+            global row
             row=mycursor.fetchone()
             # print(row)
 
@@ -184,15 +191,110 @@ class Login:
                 new_pwd.place(x=70,y=220)
 
                 #entry2 
-                self.new_pwd=ttk.Entry(self.root2,textvariable=self.var_pwd,font=("times new roman",15,"bold"))
+                self.new_pwd=ttk.Entry(self.root2,textvariable=self.var_pwd,font=("times new roman",15,"bold"),show="*")
                 self.new_pwd.place(x=70,y=250,width=270)
 
                 # Creating Button New Password
                 loginbtn=Button(self.root2,command=self.reset_pass,text="Reset Password",font=("times new roman",15,"bold"),bd=0,relief=RIDGE,fg="#fff",bg="#002B53",activeforeground="white",activebackground="#007ACC")
                 loginbtn.place(x=70,y=300,width=270,height=35)
 
+                #Creating Button For Try Another Way
 
-            
+                otherbtn=Button(self.root2,command=self.otp,text="Try Another Method",font=("times new roman",15,"bold"),bd=0,relief=RIDGE,fg="#fff",bg="#002B53",activeforeground="white",activebackground="#007ACC")
+                otherbtn.place(x=70,y=350,width=270,height=35)
+
+    def otp(self):
+        self.root3=Toplevel()
+        
+        self.root3.geometry("400x150")
+        self.root3.resizable(True, True)
+        self.root3.title("Forget Password")
+        self.root3.configure(background="white")
+        lbotp = Label(self.root3, text="Enter the OTP:", width=20,font=('times', 15, 'bold'),fg="#002B53",bg="#F2F2F2")
+        lbotp.place(x=0, y=20)
+        global otp_id
+        self.otp_id = ttk.Entry(self.root3, width=20, font=('times', 12,'bold'),foreground="#002B53",background="#F2F2F2")
+        self.otp_id.place(x=220, y=20)
+
+        submit_button = Button(self.root3, text="submit OTP", command=self.submit_otp_button,width=15, height=1, font=('times', 12, 'bold'),bd=0,relief=RIDGE,fg="#fff",bg="#002B53",activeforeground="white",activebackground="#007ACC")
+        submit_button.place(x=150, y=80)
+        conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
+        mycursor = conn.cursor()
+        query=("select * from regteach where email=%s")
+        value=(self.txtuser.get(),)
+        mycursor.execute(query,value)
+        global row
+        row=mycursor.fetchone()
+        row=row[3]
+        row=str(row)
+
+        port=587
+        ser='smtp.gmail.com'
+
+        fromm="saadzh7@gmail.com"
+        rec=row
+        pswd="akjofimqabducguf"
+        global otp
+        otp=random.randint(111111,999999)
+        
+        sub="OTP to change the Password"
+        body=f"Your OTP to Change the pasword for Attendance System is {otp}"
+        msg="Subject:{}\n\n{}".format(sub,body)
+        cont=ssl.create_default_context()
+        try:
+            # print("Connecting yo thr server,...")
+            server=smtplib.SMTP(ser,port)
+            server.starttls(context=cont)
+            server.login(fromm,pswd)
+            # print("Connected yo thr server...")
+            print()
+
+            # print(f"sending email to {rec}")
+            server.sendmail(fromm,rec,msg)
+            # print(f"successfully sent  email to {rec}")
+        except Exception as e:
+            print(e)
+
+        finally:
+            server.quit()
+            # forget_window.destroy()
+
+    def submit_otp_button(self):
+        if (otp==int(self.otp_id.get())):
+           
+            self.root4=Toplevel()
+            self.root4.geometry("400x160")
+            self.root4.resizable(True,True)
+            self.root4.title("Change Password")
+            self.root4.configure(background="white")
+            newplabel =Label(self.root4,text='Enter New Password',bg='white',font=('times', 12, ' bold '))
+            newplabel.place(x=10,y=10)
+            global newp
+            self.newp=Entry(self.root4,width=25 ,fg="black",relief='solid',font=('times', 12, ' bold '),show='*')
+            self.newp.place(x=180,y=10)
+            confnewplabel = Label(self.root4, text='Confirm New Password', bg='white', font=('times', 12, ' bold '))
+            confnewplabel.place(x=10, y=45)
+            global confnewp
+            self.confnewp = Entry(self.root4, width=25, fg="black",relief='solid', font=('times', 12, ' bold '),show='*')
+            self.confnewp.place(x=180, y=45)
+            self.otpgenereatedpwd=Button(self.root4, text="Submit", command=self.save_pwd_with_otp, fg="white", bg="green",
+                                width=15, height=1, activebackground="white", font=('times', 12, 'bold'))
+            self.otpgenereatedpwd.place(x=150, y=80)
+        else:
+            messagebox.showerror(title='Wrong OTP entered!',message='Please enter correct otp!')
+
+    def save_pwd_with_otp(self):
+        conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
+        mycursor = conn.cursor()
+        query=("UPDATE regteach SET pwd = %s WHERE email = %s")
+        value=self.confnewp.get()
+        em=row
+        values=(value,em)
+        mycursor.execute(query,values)
+        conn.commit()
+        messagebox.showinfo("Success", "Password changed successfully.")
+        mycursor.close()
+        conn.close()
 
 # =====================main program Face deteion system====================
 
@@ -204,8 +306,8 @@ class Face_Recognition_System:
 
 # This part is image labels setting start 
         # first header image  
-        img=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\banner.jpg")
-        img=img.resize((1366,130),Image.ANTIALIAS)
+        img=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\banner.jpg")
+        img=img.resize((1366,130),Image.NEAREST)
         self.photoimg=ImageTk.PhotoImage(img)
 
         # set image as lable
@@ -213,8 +315,8 @@ class Face_Recognition_System:
         f_lb1.place(x=0,y=0,width=1366,height=130)
 
         # backgorund image 
-        bg1=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\bg3.jpg")
-        bg1=bg1.resize((1366,768),Image.ANTIALIAS)
+        bg1=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\bg3.jpg")
+        bg1=bg1.resize((1366,768),Image.NEAREST)
         self.photobg1=ImageTk.PhotoImage(bg1)
 
         # set image as lable
@@ -229,8 +331,8 @@ class Face_Recognition_System:
         # Create buttons below the section 
         # ------------------------------------------------------------------------------------------------------------------- 
         # student button 1
-        std_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\std1.jpg")
-        std_img_btn=std_img_btn.resize((180,180),Image.ANTIALIAS)
+        std_img_btn=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\std1.jpg")
+        std_img_btn=std_img_btn.resize((180,180),Image.NEAREST)
         self.std_img1=ImageTk.PhotoImage(std_img_btn)
 
         std_b1 = Button(bg_img,command=self.student_pannels,image=self.std_img1,cursor="hand2")
@@ -240,8 +342,8 @@ class Face_Recognition_System:
         std_b1_1.place(x=250,y=280,width=180,height=45)
 
         # Detect Face  button 2
-        det_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\det1.jpg")
-        det_img_btn=det_img_btn.resize((180,180),Image.ANTIALIAS)
+        det_img_btn=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\det1.jpg")
+        det_img_btn=det_img_btn.resize((180,180),Image.NEAREST)
         self.det_img1=ImageTk.PhotoImage(det_img_btn)
 
         det_b1 = Button(bg_img,command=self.face_rec,image=self.det_img1,cursor="hand2",)
@@ -251,8 +353,8 @@ class Face_Recognition_System:
         det_b1_1.place(x=480,y=280,width=180,height=45)
 
          # Attendance System  button 3
-        att_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\att.jpg")
-        att_img_btn=att_img_btn.resize((180,180),Image.ANTIALIAS)
+        att_img_btn=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\att.jpg")
+        att_img_btn=att_img_btn.resize((180,180),Image.NEAREST)
         self.att_img1=ImageTk.PhotoImage(att_img_btn)
 
         att_b1 = Button(bg_img,command=self.attendance_pannel,image=self.att_img1,cursor="hand2",)
@@ -262,22 +364,22 @@ class Face_Recognition_System:
         att_b1_1.place(x=710,y=280,width=180,height=45)
 
          # Help  Support  button 4
-        hlp_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\hlp.jpg")
-        hlp_img_btn=hlp_img_btn.resize((180,180),Image.ANTIALIAS)
+        hlp_img_btn=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\hlp.jpg")
+        hlp_img_btn=hlp_img_btn.resize((180,180),Image.NEAREST)
         self.hlp_img1=ImageTk.PhotoImage(hlp_img_btn)
 
-        hlp_b1 = Button(bg_img,image=self.hlp_img1,cursor="hand2",)
+        hlp_b1 = Button(bg_img,command=self.hsupport,image=self.hlp_img1,cursor="hand2",)
         hlp_b1.place(x=940,y=100,width=180,height=180)
 
-        hlp_b1_1 = Button(bg_img,text="Help Support",cursor="hand2",font=("tahoma",15,"bold"),bg="white",fg="navyblue")
+        hlp_b1_1 = Button(bg_img,command=self.hsupport,text="Help Support",cursor="hand2",font=("tahoma",15,"bold"),bg="white",fg="navyblue")
         hlp_b1_1.place(x=940,y=280,width=180,height=45)
 
         # Top 4 buttons end.......
         # ---------------------------------------------------------------------------------------------------------------------------
         # Start below buttons.........
          # Train   button 5
-        tra_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\tra1.jpg")
-        tra_img_btn=tra_img_btn.resize((180,180),Image.ANTIALIAS)
+        tra_img_btn=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\tra1.jpg")
+        tra_img_btn=tra_img_btn.resize((180,180),Image.NEAREST)
         self.tra_img1=ImageTk.PhotoImage(tra_img_btn)
 
         tra_b1 = Button(bg_img,command=self.train_pannels,image=self.tra_img1,cursor="hand2",)
@@ -287,19 +389,19 @@ class Face_Recognition_System:
         tra_b1_1.place(x=250,y=510,width=180,height=45)
 
         # Photo   button 6
-        pho_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\qr1.png")
-        pho_img_btn=pho_img_btn.resize((180,180),Image.ANTIALIAS)
+        pho_img_btn=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\photos.png")
+        pho_img_btn=pho_img_btn.resize((180,180),Image.NEAREST)
         self.pho_img1=ImageTk.PhotoImage(pho_img_btn)
 
         pho_b1 = Button(bg_img,command=self.open_img,image=self.pho_img1,cursor="hand2",)
         pho_b1.place(x=480,y=330,width=180,height=180)
 
-        pho_b1_1 = Button(bg_img,command=self.open_img,text="QR-Codes",cursor="hand2",font=("tahoma",15,"bold"),bg="white",fg="navyblue")
+        pho_b1_1 = Button(bg_img,command=self.open_img,text="Photos",cursor="hand2",font=("tahoma",15,"bold"),bg="white",fg="navyblue")
         pho_b1_1.place(x=480,y=510,width=180,height=45)
 
         # Developers   button 7
-        dev_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\dev.jpg")
-        dev_img_btn=dev_img_btn.resize((180,180),Image.ANTIALIAS)
+        dev_img_btn=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\dev.jpg")
+        dev_img_btn=dev_img_btn.resize((180,180),Image.NEAREST)
         self.dev_img1=ImageTk.PhotoImage(dev_img_btn)
 
         dev_b1 = Button(bg_img,command=self.developr,image=self.dev_img1,cursor="hand2",)
@@ -309,14 +411,14 @@ class Face_Recognition_System:
         dev_b1_1.place(x=710,y=510,width=180,height=45)
 
         # exit   button 8
-        exi_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\exi.jpg")
-        exi_img_btn=exi_img_btn.resize((180,180),Image.ANTIALIAS)
+        exi_img_btn=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\exi.jpg")
+        exi_img_btn=exi_img_btn.resize((180,180),Image.NEAREST)
         self.exi_img1=ImageTk.PhotoImage(exi_img_btn)
 
-        exi_b1 = Button(bg_img,image=self.exi_img1,cursor="hand2",)
+        exi_b1 = Button(bg_img,command=self.close,image=self.exi_img1,cursor="hand2",)
         exi_b1.place(x=940,y=330,width=180,height=180)
 
-        exi_b1_1 = Button(bg_img,text="Exit",cursor="hand2",font=("tahoma",15,"bold"),bg="white",fg="navyblue")
+        exi_b1_1 = Button(bg_img ,text="Exit",cursor="hand2",font=("tahoma",15,"bold"),bg="white",fg="navyblue",command=self.close)
         exi_b1_1.place(x=940,y=510,width=180,height=45)
 
 # ==================Funtion for Open Images Folder==================
@@ -326,6 +428,14 @@ class Face_Recognition_System:
     def student_pannels(self):
         self.new_window=Toplevel(self.root)
         self.app=Student(self.new_window)
+
+    def close(self):
+        self.close=tkinter.messagebox.askyesno("Face Recognition","Are you sure you want to exit",parent=self.root)
+        if self.close>0:
+            root.destroy()
+        else:
+            return
+  
 
     def train_pannels(self):
         self.new_window=Toplevel(self.root)
@@ -344,9 +454,13 @@ class Face_Recognition_System:
         self.app=Developer(self.new_window)
     
     def open_img(self):
-        os.startfile("dataset")
+        os.startfile("data_img")
     
-  
+    def hsupport(self):
+        self.new_window=Toplevel(self.root)
+        self.app=Helpsupport(self.new_window)
+    
+
 
 
 

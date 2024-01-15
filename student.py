@@ -6,7 +6,7 @@ import mysql.connector
 import cv2
 # Testing Connection 
 """
-conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
 cursor = conn.cursor()
 
 cursor.execute("show databases")
@@ -41,8 +41,8 @@ class Student:
 
     # This part is image labels setting start 
         # first header image  
-        img=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\banner.jpg")
-        img=img.resize((1366,130),Image.ANTIALIAS)
+        img=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\banner.jpg")
+        img=img.resize((1366,130),Image.NEAREST)
         self.photoimg=ImageTk.PhotoImage(img)
 
         # set image as lable
@@ -50,8 +50,8 @@ class Student:
         f_lb1.place(x=0,y=0,width=1366,height=130)
 
          # backgorund image 
-        bg1=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\bg3.jpg")
-        bg1=bg1.resize((1366,768),Image.ANTIALIAS)
+        bg1=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\bg3.jpg")
+        bg1=bg1.resize((1366,768),Image.NEAREST)
         self.photobg1=ImageTk.PhotoImage(bg1)
 
         # set image as lable
@@ -81,7 +81,7 @@ class Student:
 
         #combo box 
         dep_combo=ttk.Combobox(current_course_frame,textvariable=self.var_dep,width=15,font=("verdana",12,"bold"),state="readonly")
-        dep_combo["values"]=("Select Department","BSCS","BSIT","BSENG","BSPHY","BSMATH")
+        dep_combo["values"]=("Select Department","CSE","ECE","ME","CIVIL")
         dep_combo.current(0)
         dep_combo.grid(row=0,column=1,padx=5,pady=15,sticky=W)
 
@@ -93,19 +93,19 @@ class Student:
 
         #combo box 
         cou_combo=ttk.Combobox(current_course_frame,textvariable=self.var_course,width=15,font=("verdana",12,"bold"),state="readonly")
-        cou_combo["values"]=("Select Course","SE","FE","TE","BE","MS")
+        cou_combo["values"]=("Select Year","First Year","Second Year","Third Year","Fourth Year")
         cou_combo.current(0)
         cou_combo.grid(row=0,column=3,padx=5,pady=15,sticky=W)
 
         #-------------------------------------------------------------
 
         #label Year
-        year_label=Label(current_course_frame,text="Year",font=("verdana",12,"bold"),bg="white",fg="navyblue")
+        year_label=Label(current_course_frame,text="Scheme",font=("verdana",12,"bold"),bg="white",fg="navyblue")
         year_label.grid(row=1,column=0,padx=5,sticky=W)
 
         #combo box 
         year_combo=ttk.Combobox(current_course_frame,textvariable=self.var_year,width=15,font=("verdana",12,"bold"),state="readonly")
-        year_combo["values"]=("Select Year","2017-21","2018-22","2019-23","2020-24","2021-25")
+        year_combo["values"]=("Select Batch","2019-23","2020-24","2021-25","2022-26")
         year_combo.current(0)
         year_combo.grid(row=1,column=1,padx=5,pady=15,sticky=W)
 
@@ -280,7 +280,7 @@ class Student:
         scroll_y = ttk.Scrollbar(table_frame,orient=VERTICAL)
 
         #create table 
-        self.student_table = ttk.Treeview(table_frame,column=("ID","Name","Dep","Course","Year","Sem","Div","Gender","DOB","Mob-No","Address","Roll-No","Email","Teacher","Photo"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
+        self.student_table = ttk.Treeview(table_frame,column=("ID","Name","Dep","Course","Scheme","Sem","Div","Gender","DOB","Mob-No","Address","Roll-No","Email","Teacher","Photo"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
 
         scroll_x.pack(side=BOTTOM,fill=X)
         scroll_y.pack(side=RIGHT,fill=Y)
@@ -291,7 +291,7 @@ class Student:
         self.student_table.heading("Name",text="Name")
         self.student_table.heading("Dep",text="Department")
         self.student_table.heading("Course",text="Course")
-        self.student_table.heading("Year",text="Year")
+        self.student_table.heading("Scheme",text="Scheme")
         self.student_table.heading("Sem",text="Semester")
         self.student_table.heading("Div",text="Division")
         self.student_table.heading("Gender",text="Gender")
@@ -310,7 +310,7 @@ class Student:
         self.student_table.column("Name",width=100)
         self.student_table.column("Dep",width=100)
         self.student_table.column("Course",width=100)
-        self.student_table.column("Year",width=100)
+        self.student_table.column("Scheme",width=100)
         self.student_table.column("Sem",width=100)
         self.student_table.column("Div",width=100)
         self.student_table.column("Gender",width=100)
@@ -332,7 +332,7 @@ class Student:
             messagebox.showerror("Error","Please Fill All Fields are Required!",parent=self.root)
         else:
             try:
-                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
                 mycursor = conn.cursor()
                 mycursor.execute("insert into student values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
                 self.var_std_id.get(),
@@ -350,6 +350,7 @@ class Student:
                 self.var_email.get(),
                 self.var_teacher.get(),
                 self.var_radio1.get()
+            
                 ))
 
                 conn.commit()
@@ -362,7 +363,7 @@ class Student:
     # ===========================Fetch data form database to table ================================
 
     def fetch_data(self):
-        conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+        conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
         mycursor = conn.cursor()
 
         mycursor.execute("select * from student")
@@ -382,7 +383,7 @@ class Student:
         content = self.student_table.item(cursor_focus)
         data = content["values"]
 
-        self.var_std_id.set(data[0]),
+        self.var_std_id.set(data[0]),   
         self.var_std_name.set(data[1]),
         self.var_dep.set(data[2]),
         self.var_course.set(data[3]),
@@ -405,9 +406,9 @@ class Student:
             try:
                 Update=messagebox.askyesno("Update","Do you want to Update this Student Details!",parent=self.root)
                 if Update > 0:
-                    conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+                    conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
                     mycursor = conn.cursor()
-                    mycursor.execute("update student set Name=%s,Department=%s,Course=%s,Year=%s,Semester=%s,Division=%s,Gender=%s,DOB=%s,Mobile_No=%s,Address=%s,Roll_No=%s,Email=%s,Teacher_Name=%s,PhotoSample=%s where Student_ID=%s",( 
+                    mycursor.execute("update student set Name=%s,Department=%s,Course=%s,Scheme=%s,Semester=%s,Division=%s,Gender=%s,DOB=%s,Mobile_No=%s,Address=%s,Roll_No=%s,Email=%s,Teacher_Name=%s,PhotoSample=%s where Student_ID=%s",( 
                     self.var_std_name.get(),
                     self.var_dep.get(),
                     self.var_course.get(),
@@ -442,7 +443,7 @@ class Student:
             try:
                 delete=messagebox.askyesno("Delete","Do you want to Delete?",parent=self.root)
                 if delete>0:
-                    conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+                    conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
                     mycursor = conn.cursor() 
                     sql="delete from student where Student_ID=%s"
                     val=(self.var_std_id.get(),)
@@ -482,9 +483,9 @@ class Student:
             messagebox.showerror("Error","Select Combo option and enter entry box",parent=self.root)
         else:
             try:
-                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
                 my_cursor = conn.cursor()
-                sql = "SELECT Student_ID,Name,Department,Course,Year,Semester,Division,Gender,DOB,Mobile_No,Address,Roll_No,Email,Teacher_Name,PhotoSample FROM student where Roll_No='" +str(self.var_search.get()) + "'" 
+                sql = "SELECT Student_ID,Name,Department,Course,Scheme,Semester,Division,Gender,DOB,Mobile_No,Address,Roll_No,Email,Teacher_Name,PhotoSample FROM student where Roll_No='" +str(self.var_search.get()) + "'" 
                 my_cursor.execute(sql)
                 # my_cursor.execute("select * from student where Roll_No= " +str(self.var_search.get())+" "+str(self.var_searchTX.get())+"")
                 rows=my_cursor.fetchall()        
@@ -503,12 +504,12 @@ class Student:
 #=====================This part is related to Opencv Camera part=======================
 # ==================================Generate Data set take image=========================
     def generate_dataset(self):
-        if self.var_dep.get()=="Select Department" or self.var_course.get=="Select Course" or self.var_year.get()=="Select Year" or self.var_semester.get()=="Select Semester" or self.var_std_id.get()=="" or self.var_std_name.get()=="" or self.var_div.get()=="" or self.var_roll.get()=="" or self.var_gender.get()=="" or self.var_dob.get()=="" or self.var_email.get()=="" or self.var_mob.get()=="" or self.var_address.get()=="" or self.var_teacher.get()=="":
+        if self.var_dep.get()=="Select Department" or self.var_course.get=="Select Course" or self.var_year.get()=="Select Scheme" or self.var_semester.get()=="Select Semester" or self.var_std_id.get()=="" or self.var_std_name.get()=="" or self.var_div.get()=="" or self.var_roll.get()=="" or self.var_gender.get()=="" or self.var_dob.get()=="" or self.var_email.get()=="" or self.var_mob.get()=="" or self.var_address.get()=="" or self.var_teacher.get()=="":
             messagebox.showerror("Error","Please Fill All Fields are Required!",parent=self.root)
         else:
             try:
                 
-                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3307)
+                conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
                 mycursor = conn.cursor()
                 mycursor.execute("select * from student")
                 myreslut = mycursor.fetchall()
@@ -516,7 +517,7 @@ class Student:
                 for x in myreslut:
                     id+=1
 
-                mycursor.execute("update student set Name=%s,Department=%s,Course=%s,Year=%s,Semester=%s,Division=%s,Gender=%s,DOB=%s,Mobile_No=%s,Address=%s,Roll_No=%s,Email=%s,Teacher_Name=%s,PhotoSample=%s where Student_ID=%s",( 
+                mycursor.execute("update student set Name=%s,Department=%s,Course=%s,Scheme=%s,Semester=%s,Division=%s,Gender=%s,DOB=%s,Mobile_No=%s,Address=%s,Roll_No=%s,Email=%s,Teacher_Name=%s,PhotoSample=%s where Student_ID=%s",( 
                     self.var_std_name.get(),
                     self.var_dep.get(),
                     self.var_course.get(),
@@ -535,7 +536,7 @@ class Student:
                     ))
                 conn.commit()
                 self.fetch_data()
-                self.reset_data()
+                # self.reset_data()
                 conn.close()
 
                 # ====================part of opencv=======================
@@ -556,10 +557,17 @@ class Student:
                 while True:
                     ret,my_frame=cap.read()
                     if face_croped(my_frame) is not None:
+                        # conn = mysql.connector.connect(username='root', password='root',host='localhost',database='face_recognition',port=3306)
+                        # mycursor = conn.cursor()
+                        # mycursor.execute("select Student_ID from student where Name ='"+ str(self.var_std_name.get())+"'") 
+                        # id = mycursor.fetchall()
+                       
+                        idd=self.var_std_id.get()
                         img_id+=1
                         face=cv2.resize(face_croped(my_frame),(200,200))
                         face=cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
-                        file_path="data_img/stdudent."+str(id)+"."+str(img_id)+".jpg"
+                        
+                        file_path="data_img/student."+str(idd)+"."+str(img_id)+".jpg"
                         cv2.imwrite(file_path,face)
                         cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,0),2)        
                         cv2.imshow("Capture Images",face)

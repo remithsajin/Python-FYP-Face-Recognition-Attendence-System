@@ -17,8 +17,8 @@ class Train:
 
         # This part is image labels setting start 
         # first header image  
-        img=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\banner.jpg")
-        img=img.resize((1366,130),Image.ANTIALIAS)
+        img=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\banner.jpg")
+        img=img.resize((1366,130),Image.NEAREST)
         self.photoimg=ImageTk.PhotoImage(img)
 
         # set image as lable
@@ -26,8 +26,8 @@ class Train:
         f_lb1.place(x=0,y=0,width=1366,height=130)
 
         # backgorund image 
-        bg1=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\t_bg1.jpg")
-        bg1=bg1.resize((1366,768),Image.ANTIALIAS)
+        bg1=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\t_bg1.jpg")
+        bg1=bg1.resize((1366,768),Image.NEAREST)
         self.photobg1=ImageTk.PhotoImage(bg1)
 
         # set image as lable
@@ -42,8 +42,8 @@ class Train:
         # Create buttons below the section 
         # ------------------------------------------------------------------------------------------------------------------- 
         # Training button 1
-        std_img_btn=Image.open(r"C:\Users\Muhammad Waseem\Documents\Python_Test_Projects\Images_GUI\t_btn1.png")
-        std_img_btn=std_img_btn.resize((180,180),Image.ANTIALIAS)
+        std_img_btn=Image.open(r"C:\Users\hp\Pictures\Python-FYP-Face-Recognition-Attendence-System\Images_GUI\t_btn1.png")
+        std_img_btn=std_img_btn.resize((180,180),Image.NEAREST)
         self.std_img1=ImageTk.PhotoImage(std_img_btn)
 
         std_b1 = Button(bg_img,command=self.train_classifier,image=self.std_img1,cursor="hand2")
